@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container">
+  <!-- Content here -->
+  	<div class="row">
+  		<div class="col-md-10">
+  			<h1 style="text-align: center;">AMTC Register Eski OLT</h1>
+  		</div>
+  		<div class="col-md-2">
+  			<a class="btn btn-info m-3" href="{% url 'index' %}">Yangi OLT</a>
+  		</div>
+  	</div>
+	
+	
+
+	<form method="POST">
+		{% csrf_token %}
+		{{form.as_p}}
+
+		<input class="btn btn-info" type="submit" value="submit">
+	</form>
+
+
+<br>
+
+
+<div class="container">
+
+<section class="internet">
+	<h1>Internet</h1>
+	<p>{{obj.p1}}/{{obj.p2}}/{{obj.p3}}</p>
+
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+	<pre id="internet_copy">
+interface gpon 0/{{obj.p1}}
+ont add {{obj.p2}} {{obj.p3}} sn-auth "{{obj.sn}}" omci ont-lineprofile-id 1 ont-srvprofile-id 0 desc 
+"{{obj.fio}}"	
+quit	  
+service-port {{obj.serPort}} vlan 701 gpon 0/{{obj.p1}}/{{obj.p2}} ont {{obj.p3}} gemport 10 multi-service user-vlan
+701 tag-transform transparent inbound traffic-table index 21 outbound traffic-table index 21
+	</pre>
+<i type="button" onclick="copyEvent('internet_copy')" class="fa fa-copy" style="font-size:24px;">&copy;</i>
+</div>	
+</section><!--internet-->
+
+
+<section class="telefon">
+		<h1>Telefon</h1>
+	<p>{{obj.p1}}/{{obj.p2}}/{{obj.p3}}</p>
+
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+	<pre id="telefon_copy">
+service-port {{obj.serPort|add:2}}</span> vlan 215 gpon 0/{{obj.p1}}/{{obj.p2}} ont {{obj.p3}} gemport 20 multi-service 
+user-vlan 215 tag-transform transparent inbound traffic-table index 20 outbound traffic-table index 20
+	</pre>
+<i type="button" onclick="copyEvent('telefon_copy')" class="fa fa-copy" style="font-size:24px;">&copy;</i>
+</div>			
+</section><!--telefon-->
+
+
+<section class="iptv">
+		<h1>IPTv</h1>
+	<p>{{obj.p1}}/{{obj.p2}}/{{obj.p3}}</p>
+
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+   <pre id="iptv_copy">
+service-port {{obj.serPort|add:1}} vlan 540 gpon 0/{{obj.p1}}/{{obj.p2}} ont {{obj.p3}} gemport 30 multi-service user-vlan 540 tag-transform transparent inbound 
+traffic-table index 19 outbound traffic-table index 19
+<hr>btv
+igmp user add service-port {{obj.serPort|add:1}} no-auth quickleave immediate max-program 2
+multicast-vlan 506
+igmp multicast-vlan member service-port {{obj.serPort|add:1}}
+   </pre>
+<i type="button" onclick="copyEvent('iptv_copy')" class="fa fa-copy" style="font-size:24px;">&copy;</i>
+</div>				
+</section><!--iptv-->
+
+</div>
+
+</div>
+
+<a href="{% url 'last30_eski' %}">Last 30 register</a>
+
+{% endblock content %}
